@@ -1,0 +1,30 @@
+# Сборочные директории
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Исполняемые файлы
+*.exe
+*.out
+*.app
+game
+
+# Файлы логов и временные файлы
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Кэш CMake / LSP
+.ccls-cache/
+compile_commands.json
+
+# Файлы IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Mac и Linux системные файлы
+.DS_Store
