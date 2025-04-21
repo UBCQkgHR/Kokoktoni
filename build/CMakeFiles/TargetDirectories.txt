@@ -1,0 +1,3 @@
+/home/dadei/C/product/Kokotoni/build/CMakeFiles/game.dir
+/home/dadei/C/product/Kokotoni/build/CMakeFiles/edit_cache.dir
+/home/dadei/C/product/Kokotoni/build/CMakeFiles/rebuild_cache.dir
