@@ -3,22 +3,20 @@
 
 #include <SFML/Graphics.hpp>
 
-
-class Player{
+class Player {
 public:
-    sf::Sprite sprite;
-    sf::Texture texture;
-    float speed = 200.0f;
-    int score = 0;
-    Player();
-    ~Player();
-    void move(float deltaTime);
-   
+  sf::Sprite sprite;
+  sf::Texture texture;
+  float speed = 200.0f;
+  int score = 0;
+  Player();
+  ~Player();
+  void move(float deltaTime, std::vector<sf::RectangleShape> platforms);
 
 private:
-    sf::Vector2f velocity; //скорость по х и у
-    float gravity =  300.f;
-    float jumpStrength = -200.f;
+  sf::Vector2f velocity; // скорость по х и у
+  float gravity = 300.f;
+  float jumpStrength = -200.f;
 };
 
 #endif

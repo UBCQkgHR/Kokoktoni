@@ -1,4 +1,5 @@
 #include "../include/Player.h"
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
@@ -10,9 +11,10 @@ Player::Player() {
   sprite.setPosition(100.0f, 100.0f);
 }
 
-Player::~Player() {};
+Player::~Player(){};
 
-void Player::move(float deltaTime) {
+void Player::move(float deltaTime,
+                  const std::vector<sf::RectangleShape> platforms) {
   velocity.y += gravity * deltaTime;
   if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key::Space))) {
     velocity.y = jumpStrength;
@@ -27,15 +29,23 @@ void Player::move(float deltaTime) {
 
   sprite.move(velocity * deltaTime);
   sf::Vector2f pos = sprite.getPosition();
-  if (pos.y > 500.f) {
-    pos.y = 500.f;
-    velocity.y = 0.f;
-  }
+  // if (pos.y > 500.f) {
+  //   pos.y = 500.f;
+  //   velocity.y = 0.f;
+  // }
   if (pos.x < 0) {
     pos.x = 0;
   }
   if (pos.x > 800 - sprite.getGlobalBounds().width) {
     pos.x = 800 - sprite.getGlobalBounds().width;
+  }
+  for (const auto &platform : platforms) {
+    if (sprite.getGlobalBounds().intersects(platform.getGlobalBounds())) {
+      sf::Vector2f pos = sprite.getPosition();
+      pos.y = platform.getPosition().y - sprite.getGlobalBounds().height;
+      sprite.setPosition(pos);
+      velocity.y = 0.f;
+    }
   }
   sprite.setPosition(pos);
 }
