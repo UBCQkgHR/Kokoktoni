@@ -14,7 +14,18 @@ int main() {
   // Создаём окно
   sf::RenderWindow window(sf::VideoMode(800, 600), "Kokotoni Wilf");
 
+  int levels[10] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
   std::vector<sf::RectangleShape> platforms;
+
+  for (int i = 0; i < 10; ++i) {
+    if (levels[i] == 1) {
+      sf::RectangleShape level(sf::Vector2f(80.f, 32.f));
+      level.setPosition(80.f * i, 100);
+      level.setFillColor(sf::Color(100, 100, 100));
+      platforms.push_back(level);
+    }
+  }
 
   sf::RectangleShape floor(sf::Vector2f(800.f, 40.f));
   floor.setPosition(0.f, 560.f);
