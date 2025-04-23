@@ -13,8 +13,7 @@ Player::Player() {
 
 Player::~Player(){};
 
-void Player::move(float deltaTime,
-                  const std::vector<sf::RectangleShape> platforms) {
+void Player::move(float deltaTime) {
   velocity.y += gravity * deltaTime;
   if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key::Space))) {
     velocity.y = jumpStrength;
@@ -39,13 +38,39 @@ void Player::move(float deltaTime,
   if (pos.x > 800 - sprite.getGlobalBounds().width) {
     pos.x = 800 - sprite.getGlobalBounds().width;
   }
-  for (const auto &platform : platforms) {
+  /*for (const auto &platform : platforms) {
     if (sprite.getGlobalBounds().intersects(platform.getGlobalBounds())) {
       sf::Vector2f pos = sprite.getPosition();
       pos.y = platform.getPosition().y - sprite.getGlobalBounds().height;
       sprite.setPosition(pos);
       velocity.y = 0.f;
     }
-  }
+  }*/
   sprite.setPosition(pos);
 }
+
+void Player::resolveCollision(sf::Sprite &player,
+                              const sf::RectangleShape &platforms) {
+  AABB A(player.getGlobalBounds());
+  AABB B(platforms.getGlobalBounds());
+
+  if (A.right > B.left && A.left < B.right && A.bottom > B.top &&
+      A.top < B.bottom) {
+    float overlaX = std::min(A.right, B.right) - std::max(A.left, B.left);
+    float overlaY = std::min(A.bottom, B.bottom) - std::max(A.top, B.top);
+
+    if (overlaX < overlaY) {
+      if (A.left < B.left) {
+        player.move(-overlaX, 0.f);
+      } else {
+        player.move(overlaX, 0.f);
+      }
+    } else {
+      if (A.top < B.top) {
+        player.move(0.f, -overlaY);
+      } else {
+        player.move(0.f, overlaY);
+      }
+    }
+  }
+};

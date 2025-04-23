@@ -12,22 +12,29 @@
 #include <vector>
 int main() {
   // Создаём окно
-  sf::RenderWindow window(sf::VideoMode(800, 600), "Kokotoni Wilf");
+  sf::RenderWindow window(sf::VideoMode(800, 640), "Kokotoni Wilf");
 
-  int levels[10] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  int levels[8][10] = {
+      {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+      {1, 0, 0, 1, 0, 0, 1, 0, 0, 1}, {1, 1, 0, 1, 0, 1, 1, 0, 0, 1},
+      {1, 0, 0, 1, 1, 1, 1, 1, 0, 1}, {1, 1, 1, 1, 0, 0, 0, 0, 0, 1},
+      {1, 1, 0, 0, 0, 1, 1, 0, 0, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
 
   std::vector<sf::RectangleShape> platforms;
 
-  for (int i = 0; i < 10; ++i) {
-    if (levels[i] == 1) {
-      sf::RectangleShape level(sf::Vector2f(80.f, 32.f));
-      level.setPosition(80.f * i, 100);
-      level.setFillColor(sf::Color(100, 100, 100));
-      platforms.push_back(level);
+  for (int i = 0; i < 8; ++i) {
+    for (int u = 0; u < 10; ++u) {
+      if (levels[i][u] == 1) {
+        sf::RectangleShape level(sf::Vector2f(80.f, 80.f));
+        level.setPosition(80.f * u, 80.f * i);
+        level.setFillColor(sf::Color(100, 100, 100));
+        platforms.push_back(level);
+      }
     }
   }
 
-  sf::RectangleShape floor(sf::Vector2f(800.f, 40.f));
+  /*
+    sf::RectangleShape floor(sf::Vector2f(800.f, 40.f));
   floor.setPosition(0.f, 560.f);
   floor.setFillColor(sf::Color(100, 60, 30));
   platforms.push_back(floor);
@@ -47,7 +54,7 @@ int main() {
       300.f, 300.f)); // Создаём объект без копирования прямо в векторе
   items.emplace_back(std::make_unique<Item>(500.f, 300.f));
   items.emplace_back(std::make_unique<Item>(600.f, 300.f));
-
+*/
   Player player;
   sf::Clock clock;
   Score scorePlayer("../arialmt.ttf");
@@ -61,28 +68,31 @@ int main() {
         window.close(); // Закрытие окна
       }
     }
-    player.move(deltaTime.asSeconds(), platforms); // передвигаем игрока
+    player.move(deltaTime.asSeconds()); // передвигаем игрока
 
-    for (auto &item : items) {
-      if (!item->collect && player.sprite.getGlobalBounds().intersects(
-                                item->getSprite().getGlobalBounds())) {
-        item->collect = true;
-        player.score++;
-        scorePlayer.SetString(player.score);
-      }
-    }
-
+    /* for (auto &item : items) {
+       if (!item->collect && player.sprite.getGlobalBounds().intersects(
+                                 item->getSprite().getGlobalBounds())) {
+         item->collect = true;
+         player.score++;
+         scorePlayer.SetString(player.score);
+       }
+     }
+ */
     window.clear(); // Очищаем экран
-    for (auto &item :
-         items) { // перебираем все объекты в векторе Item для отрисовки
-      item->draw(window);
-    }
-
+    /*  for (auto &item :
+           items) { // перебираем все объекты в векторе Item для отрисовки
+        item->draw(window);
+      }
+  */
     for (const auto &platform : platforms) {
       window.draw(platform);
     }
 
-    window.draw(items[0]->Sprite);
+    //  window.draw(items[0]->Sprite);
+    for (auto &platform : platforms) {
+      player.resolveCollision(player.sprite, platform);
+    }
 
     window.draw(player.sprite);         // Рисуем игрока//
     window.draw(scorePlayer.scoreText); // рисуем счет

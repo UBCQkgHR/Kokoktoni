@@ -2,6 +2,10 @@
 #define PLAYER_HPP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 class Player {
 public:
@@ -11,7 +15,20 @@ public:
   int score = 0;
   Player();
   ~Player();
-  void move(float deltaTime, std::vector<sf::RectangleShape> platforms);
+  void move(float deltaTime);
+
+  struct AABB {
+    float left, top, right, bottom;
+
+    AABB(const sf::FloatRect &bounds) {
+      left = bounds.left;
+      top = bounds.top;
+      right = bounds.left + bounds.width;
+      bottom = bounds.top + bounds.height;
+    }
+  };
+  void resolveCollision(sf::Sprite &player,
+                        const sf::RectangleShape &platforms);
 
 private:
   sf::Vector2f velocity; // скорость по х и у
