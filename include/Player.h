@@ -27,8 +27,15 @@ public:
       bottom = bounds.top + bounds.height;
     }
   };
-  void resolveCollision(sf::Sprite &player,
-                        const sf::RectangleShape &platforms);
+  /*  void resolveCollision(sf::Sprite &player,
+                          const sf::RectangleShape &platforms);
+  */
+
+  void resolveCollisionX(sf::Sprite &player,
+                         const sf::RectangleShape &platforms);
+
+  void resolveCollisionY(sf::Sprite &player,
+                         const sf::RectangleShape &platforms);
 
 private:
   sf::Vector2f velocity; // скорость по х и у

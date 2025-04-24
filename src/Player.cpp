@@ -1,5 +1,6 @@
 #include "../include/Player.h"
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
@@ -48,7 +49,41 @@ void Player::move(float deltaTime) {
   }*/
   sprite.setPosition(pos);
 }
+void Player::resolveCollisionX(sf::Sprite &player,
+                               const sf::RectangleShape &platforms) {
+  sf::FloatRect playerBounds = player.getGlobalBounds();
+  sf::FloatRect platformBounds = platforms.getGlobalBounds();
 
+  if (playerBounds.intersects(platformBounds)) {
+    if (velocity.x > 0) {
+      player.setPosition(platformBounds.left + playerBounds.width,
+                         playerBounds.top);
+    } else if (velocity.x < 0) {
+      player.setPosition(platformBounds.left + platformBounds.width,
+                         playerBounds.top);
+    }
+    velocity.x = 0;
+  }
+}
+
+void Player::resolveCollisionY(sf::Sprite &player,
+                               const sf::RectangleShape &platforms) {
+  sf::FloatRect playerBounds = player.getGlobalBounds();
+  sf::FloatRect platformBounds = platforms.getGlobalBounds();
+
+  if (playerBounds.intersects(platformBounds)) {
+    if (velocity.y > 0) {
+      player.setPosition(platformBounds.left + playerBounds.height,
+                         playerBounds.top);
+    } else if (velocity.y < 0) {
+      player.setPosition(platformBounds.left + platformBounds.height,
+                         playerBounds.top);
+    }
+    velocity.y = 0;
+  }
+}
+
+/*
 void Player::resolveCollision(sf::Sprite &player,
                               const sf::RectangleShape &platforms) {
   AABB A(player.getGlobalBounds());
@@ -73,4 +108,4 @@ void Player::resolveCollision(sf::Sprite &player,
       }
     }
   }
-};
+};*/

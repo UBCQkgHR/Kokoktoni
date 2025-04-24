@@ -25,7 +25,7 @@ int main() {
   for (int i = 0; i < 8; ++i) {
     for (int u = 0; u < 10; ++u) {
       if (levels[i][u] == 1) {
-        sf::RectangleShape level(sf::Vector2f(80.f, 80.f));
+        sf::RectangleShape level(sf::Vector2f(78.f, 78.f));
         level.setPosition(80.f * u, 80.f * i);
         level.setFillColor(sf::Color(100, 100, 100));
         platforms.push_back(level);
@@ -91,7 +91,12 @@ int main() {
 
     //  window.draw(items[0]->Sprite);
     for (auto &platform : platforms) {
-      player.resolveCollision(player.sprite, platform);
+      player.resolveCollisionX(player.sprite, platform);
+    }
+
+    player.move(deltaTime.asSeconds(), ); // передвигаем игрока
+    for (auto &platform : platforms) {
+      player.resolveCollisionY(player.sprite, platform);
     }
 
     window.draw(player.sprite);         // Рисуем игрока//
