@@ -15,7 +15,9 @@ public:
   int score = 0;
   Player();
   ~Player();
-  void move(float deltaTime);
+  void moveX(float deltaTime);
+
+  void moveY(float deltaTime);
 
   struct AABB {
     float left, top, right, bottom;
