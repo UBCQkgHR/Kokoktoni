@@ -39,10 +39,18 @@ public:
   void resolveCollisionY(sf::Sprite &player,
                          const sf::RectangleShape &platforms);
 
+  void updateAnimation(float deltaTime);
+
 private:
+  int currentFrame = 0;
+  float animationTimer = 0.f;
+  float frameDuration = 0.1f;
+  int totalFrames = 4;
   sf::Vector2f velocity; // скорость по х и у
   float gravity = 300.f;
   float jumpStrength = -200.f;
+  sf::FloatRect bounds;
+  sf::Vector2f desiredSize;
 };
 
 #endif

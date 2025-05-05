@@ -132,7 +132,8 @@ int main() {
 
     //  window.draw(items[0]->Sprite);
 
-    player.moveX(deltaTime.asSeconds()); // передвигаем игрока
+    player.moveX(deltaTime.asSeconds());
+    player.updateAnimation(deltaTime.asSeconds()); // передвигаем игрока
     for (auto &platform : platforms) {
       player.resolveCollisionX(player.sprite, platform);
     }
