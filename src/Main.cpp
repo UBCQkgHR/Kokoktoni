@@ -14,7 +14,7 @@ int main() {
   // Создаём окно
   sf::RenderWindow window(sf::VideoMode(1024, 768), "Kokotoni Wilf");
 
-  int levels[32][32] = {
+  int blocks[32][32] = {
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
       {1, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -59,16 +59,23 @@ int main() {
   std::vector<sf::RectangleShape> platforms;
 
   std::vector<std::unique_ptr<Item>> items; // Создаём вектор указателей на Item
-                                            //
+
+  sf::Texture trava;
+  if (!(trava.loadFromFile("../trava.png"))) {
+    printf("%s", "Don`t load texture trava!");
+  }
+
+  sf::RectangleShape block(sf::Vector2f(32.f, 32.f));
+  block.setTexture(&trava);
   for (int i = 0; i < 32; ++i) {
     for (int u = 0; u < 32; ++u) {
-      if (levels[i][u] == 1) {
-        sf::RectangleShape level(sf::Vector2f(32.f, 32.f));
-        level.setPosition(32.f * u, 32.f * i);
-        level.setFillColor(sf::Color(100, 100, 100));
-        platforms.push_back(level);
+      if (blocks[i][u] == 1) {
+        //      sf::RectangleShape block(sf::Vector2f(32.f, 32.f));
+        block.setPosition(32.f * u, 32.f * i);
+        block.setFillColor(sf::Color(100, 100, 100));
+        platforms.push_back(block);
       }
-      if (levels[i][u] == 2) {
+      if (blocks[i][u] == 2) {
         items.emplace_back(std::make_unique<Item>(32.f * u, 32.f * i));
       }
     }

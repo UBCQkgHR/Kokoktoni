@@ -6,11 +6,12 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 Player::Player() {
+
   desiredSize.x = 25.f;
   desiredSize.y = 25.f;
 
   if (!(texture.loadFromFile("../playerDr.png"))) {
-    printf("%s", "Don`t load file!");
+    printf("%s", "Don`t load file Player!");
   };
   sprite.setTexture(texture);
   sprite.setTextureRect(sf::IntRect(0, 105, 105, 105));
@@ -31,17 +32,35 @@ Player::Player() {
   totalFrames = 3;
 }
 
-Player::~Player() {};
+Player::~Player(){};
 
 void Player::updateAnimation(float deltaTime) {
   animationTimer += deltaTime;
-  if (animationTimer >= frameDuration) {
-    animationTimer = 0.f;
-    currentFrame = (currentFrame + 1) % totalFrames;
-    sprite.setTextureRect(sf::IntRect(currentFrame * 105, 105, 105, 105));
+  switch (currentState) {
+  case PlayerState::Idle:
+    if (animationTimer >= frameDuration) {
+      animationTimer = 0.f;
+      currentFrame = (currentFrame + 1) % 1;
+      sprite.setTextureRect(sf::IntRect(currentFrame * 105, 105, 105, 105));
+    }
+    break;
+
+  case PlayerState::RunLeft:
+    if (animationTimer >= frameDuration) {
+      animationTimer = 0.f;
+      currentFrame = (currentFrame + 1) % totalFrames;
+      sprite.setTextureRect(sf::IntRect(currentFrame * 105, 105, 105, 105));
+    }
+    break;
+  case PlayerState::RunRight:
+    if (animationTimer >= frameDuration) {
+      animationTimer = 0.f;
+      currentFrame = (currentFrame + 1) % totalFrames;
+      sprite.setTextureRect(sf::IntRect(currentFrame * 105, 210, 105, 105));
+    }
+    break;
   }
 }
-
 void Player::moveY(float deltaTime) {
   velocity.y += gravity * deltaTime;
   if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key::Space))) {
@@ -56,10 +75,13 @@ void Player::moveX(float deltaTime) {
   // velocity.y = 0;
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
     velocity.x = -100.f;
+    currentState = PlayerState::RunLeft;
   } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
     velocity.x = 100.f;
+    currentState = PlayerState::RunRight;
   } else {
     velocity.x = 0.f;
+    currentState = PlayerState::Idle;
   }
 
   sprite.move(velocity.x * deltaTime, 0.f);

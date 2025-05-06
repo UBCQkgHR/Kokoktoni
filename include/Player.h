@@ -7,6 +7,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
+enum class PlayerState { Idle, RunLeft, RunRight, Jump, Fall, Attack };
+
 class Player {
 public:
   sf::Sprite sprite;
@@ -51,6 +53,7 @@ private:
   float jumpStrength = -200.f;
   sf::FloatRect bounds;
   sf::Vector2f desiredSize;
+  PlayerState currentState;
 };
 
 #endif
