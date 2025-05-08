@@ -5,14 +5,18 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-enum class PlayerState { Idle, RunLeft, RunRight, Jump, Fall, Attack };
+enum class PlayerState { Idle, Walk, RunLeft, RunRight, Jump, Fall, Attack };
 
 class Player {
 public:
   sf::Sprite sprite;
   sf::Texture texture;
+  sf::Texture texture_Idle;
+  sf::Texture texture_Attack;
+  sf::Texture texture_Walk;
   float speed = 200.0f;
   int score = 0;
   Player();

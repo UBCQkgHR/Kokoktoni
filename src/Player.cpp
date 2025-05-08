@@ -7,16 +7,25 @@
 #include <iostream>
 Player::Player() {
 
-  desiredSize.x = 25.f;
-  desiredSize.y = 25.f;
+  desiredSize.x = 63.f;
+  desiredSize.y = 64.f;
 
-  if (!(texture.loadFromFile("../playerDr.png"))) {
-    printf("%s", "Don`t load file Player!");
+  if (!(texture_Idle.loadFromFile("../asset/Idle.png"))) {
+    printf("%s", "Don`t load file Idle Player!");
   };
-  sprite.setTexture(texture);
-  sprite.setTextureRect(sf::IntRect(0, 105, 105, 105));
+
+  if (!(texture_Walk.loadFromFile("../asset/Walk.png"))) {
+    printf("%s", "Don`t load file walki_player !");
+  };
+
+  if (!(texture_Attack.loadFromFile("../asset/Attack.png"))) {
+    printf("%s", "Don`t load file walki_player !");
+  };
+  sprite.setTexture(texture_Idle);
+  sprite.setTextureRect(sf::IntRect(20, 30, 128, 128));
   sprite.setPosition(100.0f, 100.0f);
-  sprite.setScale(desiredSize.x / bounds.width, desiredSize.y / bounds.height);
+  // sprite.setScale(desiredSize.x / bounds.width, desiredSize.y /
+  // bounds.height);
   sf::FloatRect localBounds = sprite.getLocalBounds();
   sf::IntRect rect = sprite.getTextureRect();
 
@@ -32,16 +41,27 @@ Player::Player() {
   totalFrames = 3;
 }
 
-Player::~Player(){};
+Player::~Player() {};
 
 void Player::updateAnimation(float deltaTime) {
   animationTimer += deltaTime;
   switch (currentState) {
+  case PlayerState::Attack:
+    if (animationTimer >= frameDuration) {
+      animationTimer = 0.f;
+      totalFrames = 5;
+      currentFrame = (currentFrame + 1) % totalFrames;
+      sprite.setTexture(texture_Attack);
+      sprite.setTextureRect(sf::IntRect((currentFrame * 128), 37, 128, 91));
+    }
+    break;
   case PlayerState::Idle:
     if (animationTimer >= frameDuration) {
       animationTimer = 0.f;
-      currentFrame = (currentFrame + 1) % 1;
-      sprite.setTextureRect(sf::IntRect(currentFrame * 105, 105, 105, 105));
+      totalFrames = 10;
+      currentFrame = (currentFrame + 1) % totalFrames;
+      sprite.setTexture(texture_Idle);
+      sprite.setTextureRect(sf::IntRect(currentFrame * 128 + 20, 37, 67, 91));
     }
     break;
 
@@ -49,15 +69,21 @@ void Player::updateAnimation(float deltaTime) {
     if (animationTimer >= frameDuration) {
       animationTimer = 0.f;
       currentFrame = (currentFrame + 1) % totalFrames;
-      sprite.setTextureRect(sf::IntRect(currentFrame * 105, 105, 105, 105));
+      totalFrames = 12;
+      sprite.setTexture(texture_Walk);
+      sprite.setTextureRect(
+          sf::IntRect((currentFrame * 128) + 128 - 40, 37, -67, 91));
     }
     break;
   case PlayerState::RunRight:
     if (animationTimer >= frameDuration) {
       animationTimer = 0.f;
+      totalFrames = 12;
       currentFrame = (currentFrame + 1) % totalFrames;
-      sprite.setTextureRect(sf::IntRect(currentFrame * 105, 210, 105, 105));
+      sprite.setTexture(texture_Walk);
+      sprite.setTextureRect(sf::IntRect((currentFrame * 128) + 20, 37, 67, 91));
     }
+
     break;
   }
 }
@@ -79,6 +105,8 @@ void Player::moveX(float deltaTime) {
   } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
     velocity.x = 100.f;
     currentState = PlayerState::RunRight;
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+    currentState = PlayerState::Attack;
   } else {
     velocity.x = 0.f;
     currentState = PlayerState::Idle;

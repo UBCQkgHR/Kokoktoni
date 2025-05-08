@@ -67,7 +67,7 @@ int main() {
     printf("%s", "Don`t load texture trava!");
   }
 
-  sf::RectangleShape block(sf::Vector2f(32.f, 32.f));
+  sf::RectangleShape block(sf::Vector2f(31.f, 31.f));
   block.setTexture(&blockTexture);
   block.setTextureRect(sf::IntRect(0, 0, 32, 32));
 
