@@ -78,7 +78,7 @@ void Level::loadmap() {
           continue;
         }
         --maptit;
-        sf::RectangleShape block(sf::Vector2f(31.f, 31.f));
+        sf::RectangleShape block(sf::Vector2f(32.f, 32.f));
         block.setPosition(32.f * x, 32.f * y);
         block.setTexture(&blockTexture);
         block.setTextureRect(

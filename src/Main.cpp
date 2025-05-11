@@ -1,3 +1,4 @@
+#include "../include/Enemy.hpp"
 #include "../include/Item.hpp"
 #include "../include/Level.h"
 #include "../include/Player.h"
@@ -16,7 +17,7 @@ int main() {
   std::cout << "star" << std::endl;
   // Создаём окно
   sf::RenderWindow window(sf::VideoMode(1024, 768), "Kokotoni Wilf");
-
+  Enemy enemy;
   Player player;
   Level level;
   level.loadmap();
@@ -55,16 +56,21 @@ int main() {
     //  window.draw(items[0]->Sprite);
 
     player.moveX(deltaTime.asSeconds());
+    enemy.moveX(deltaTime.asSeconds());
     player.updateAnimation(deltaTime.asSeconds()); // передвигаем игрока
     for (auto &platform : level.platforms_collision) {
       player.resolveCollisionX(player.sprite, platform);
+      enemy.resolveCollisionX(enemy.sprite, platform);
     }
 
     player.moveY(deltaTime.asSeconds()); // передвигаем игрока
+    enemy.moveY(deltaTime.asSeconds());
     for (auto &platform : level.platforms_collision) {
       player.resolveCollisionY(player.sprite, platform);
+      enemy.resolveCollisionY(enemy.sprite, platform);
     }
 
+    window.draw(enemy.sprite);
     window.draw(player.sprite);         // Рисуем игрока//
     window.draw(scorePlayer.scoreText); // рисуем счет
 

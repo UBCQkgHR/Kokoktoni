@@ -41,7 +41,7 @@ Player::Player() {
   totalFrames = 3;
 }
 
-Player::~Player() {};
+Player::~Player(){};
 
 void Player::updateAnimation(float deltaTime) {
   animationTimer += deltaTime;
