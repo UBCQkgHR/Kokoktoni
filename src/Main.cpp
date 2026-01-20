@@ -15,84 +15,85 @@
 #include "../include/Score.h"
 #include "../include/json.hpp"
 int main() {
-    std::cout << "star" << std::endl;
-    // Создаём окно
-    sf::RenderWindow window(sf::VideoMode(1024, 768), "Kokotoni Wilf");
-    window.setFramerateLimit(60);
+  std::cout << "star" << std::endl;
+  // Создаём окно
+  sf::RenderWindow window(sf::VideoMode(1024, 768), "Kokotoni Wilf");
+  window.setFramerateLimit(60);
 
-    Enemy enemy;
-    Enemy enemy2;
-    Player player;
-    Level level;
-    level.loadmap();
-    sf::Clock clock;
-    Score scorePlayer("../arialmt.ttf");
-    enemy2.setSpeed(200);
-    while (window.isOpen()) {
-        sf::Event event;
-        sf::Time deltaTime = clock.restart();
+  Enemy enemy;
+  Enemy enemy2;
+  Player player;
+  Level level;
+  level.loadmap();
+  sf::Clock clock;
+  Score scorePlayer("../arialmt.ttf");
+  enemy2.setSpeed(200);
+  while (window.isOpen()) {
+    sf::Event event;
+    sf::Time deltaTime = clock.restart();
 
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();  // Закрытие окна
-            }
-        }
-
-        for (auto &item : level.items) {
-            if (!item->collect && player.sprite.getGlobalBounds().intersects(
-                                      item->getSprite().getGlobalBounds())) {
-                item->collect = true;
-                player.score++;
-                scorePlayer.SetString(player.score);
-            }
-        }
-
-        window.clear();  // Очищаем экран
-        for (auto &item : level.items) {  // перебираем все объекты в векторе
-                                          // Item для отрисовки
-            item->draw(window);
-        }
-
-        for (const auto &platform : level.platforms) {
-            window.draw(platform);
-        }
-
-        //  window.draw(items[0]->Sprite);
-
-        enemy.update();   // обновление Враw
-        enemy2.update();  // обновление Враw
-        player.moveX(deltaTime.asSeconds());
-        player.checkCollision(level);
-        enemy.moveX(deltaTime.asSeconds());
-        enemy2.moveX(deltaTime.asSeconds());
-        player.updateAnimation(deltaTime.asSeconds());  // анимация  игрока
-        enemy.updateAnimation(deltaTime.asSeconds());  // анимация Врага.
-        enemy2.updateAnimation(deltaTime.asSeconds());  // анимация Врага.
-        /* for (auto &platform : level.platforms_collision) {
-             player.resolveCollisionX(player.sprite, platform);
-             enemy.resolveCollisionX(enemy.sprite, platform);
-             enemy2.resolveCollisionX(enemy2.sprite, platform);
-         }
- */
-        player.moveY(deltaTime.asSeconds());  // передвигаем игрока
-        enemy.moveY(deltaTime.asSeconds());
-        /*       for (auto &platform : level.platforms_collision) {
-                   player.resolveCollisionY(player.sprite, platform);
-                   enemy.resolveCollisionY(enemy.sprite, platform);
-                   enemy2.resolveCollisionY(enemy2.sprite, platform);
-               }
-       */
-        window.draw(enemy.sprite);
-        window.draw(enemy2.sprite);
-        window.draw(player.sprite);          // Рисуем игрока//
-        window.draw(scorePlayer.scoreText);  // рисуем счет
-
-        window.display();  // Отображаем всё на экране
-                           //        std::cout << 1000000.0f /
-                           //        clock.getElapsedTime().asMicroseconds()
-                           //                << '\n';
-        // clock.restart();
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) {
+        window.close(); // Закрытие окна
+      }
     }
 
-    return 0;
+    for (auto &item : level.items) {
+      if (!item->collect && player.sprite.getGlobalBounds().intersects(
+                                item->getSprite().getGlobalBounds())) {
+        item->collect = true;
+        player.score++;
+        scorePlayer.SetString(player.score);
+      }
+    }
+
+    window.clear(); // Очищаем экран
+    for (auto &item : level.items) { // перебираем все объекты в векторе
+                                     // Item для отрисовки
+      item->draw(window);
+    }
+
+    for (const auto &platform : level.platforms) {
+      window.draw(platform);
+    }
+
+    //  window.draw(items[0]->Sprite);
+
+    enemy.update();  // обновление Враw
+    enemy2.update(); // обновление Враw
+    player.moveX(deltaTime.asSeconds());
+    player.checkCollisionX(level);
+    enemy.moveX(deltaTime.asSeconds());
+    enemy2.moveX(deltaTime.asSeconds());
+    player.updateAnimation(deltaTime.asSeconds()); // анимация  игрока
+    enemy.updateAnimation(deltaTime.asSeconds()); // анимация Врага.
+    enemy2.updateAnimation(deltaTime.asSeconds()); // анимация Врага.
+    /* for (auto &platform : level.platforms_collision) {
+         player.resolveCollisionX(player.sprite, platform);
+         enemy.resolveCollisionX(enemy.sprite, platform);
+         enemy2.resolveCollisionX(enemy2.sprite, platform);
+     }
+*/
+    player.moveY(deltaTime.asSeconds()); // передвигаем игрока
+    player.checkCollisionY(level);
+    enemy.moveY(deltaTime.asSeconds());
+    /*       for (auto &platform : level.platforms_collision) {
+               player.resolveCollisionY(player.sprite, platform);
+               enemy.resolveCollisionY(enemy.sprite, platform);
+               enemy2.resolveCollisionY(enemy2.sprite, platform);
+           }
+   */
+    window.draw(enemy.sprite);
+    window.draw(enemy2.sprite);
+    window.draw(player.sprite);         // Рисуем игрока//
+    window.draw(scorePlayer.scoreText); // рисуем счет
+
+    window.display(); // Отображаем всё на экране
+                      //        std::cout << 1000000.0f /
+                      //        clock.getElapsedTime().asMicroseconds()
+                      //                << '\n';
+                      // clock.restart();
+  }
+
+  return 0;
 }
