@@ -16,6 +16,7 @@ class Enemy {
     sf::Texture texture_Attack;
     Enemy();
     ~Enemy();
+    void setSpeed(int setSpeed);
     void moveY(float deltaTime);
     void moveX(float deltaTime);
 

@@ -18,13 +18,16 @@ int main() {
     std::cout << "star" << std::endl;
     // Создаём окно
     sf::RenderWindow window(sf::VideoMode(1024, 768), "Kokotoni Wilf");
+    window.setFramerateLimit(60);
+
     Enemy enemy;
+    Enemy enemy2;
     Player player;
     Level level;
     level.loadmap();
     sf::Clock clock;
     Score scorePlayer("../arialmt.ttf");
-
+    enemy2.setSpeed(200);
     while (window.isOpen()) {
         sf::Event event;
         sf::Time deltaTime = clock.restart();
@@ -56,28 +59,39 @@ int main() {
 
         //  window.draw(items[0]->Sprite);
 
-        enemy.update();
+        enemy.update();   // обновление Враw
+        enemy2.update();  // обновление Враw
         player.moveX(deltaTime.asSeconds());
+        player.checkCollision(level);
         enemy.moveX(deltaTime.asSeconds());
+        enemy2.moveX(deltaTime.asSeconds());
         player.updateAnimation(deltaTime.asSeconds());  // анимация  игрока
         enemy.updateAnimation(deltaTime.asSeconds());  // анимация Врага.
-        for (auto &platform : level.platforms_collision) {
-            player.resolveCollisionX(player.sprite, platform);
-            enemy.resolveCollisionX(enemy.sprite, platform);
-        }
-
+        enemy2.updateAnimation(deltaTime.asSeconds());  // анимация Врага.
+        /* for (auto &platform : level.platforms_collision) {
+             player.resolveCollisionX(player.sprite, platform);
+             enemy.resolveCollisionX(enemy.sprite, platform);
+             enemy2.resolveCollisionX(enemy2.sprite, platform);
+         }
+ */
         player.moveY(deltaTime.asSeconds());  // передвигаем игрока
         enemy.moveY(deltaTime.asSeconds());
-        for (auto &platform : level.platforms_collision) {
-            player.resolveCollisionY(player.sprite, platform);
-            enemy.resolveCollisionY(enemy.sprite, platform);
-        }
-
+        /*       for (auto &platform : level.platforms_collision) {
+                   player.resolveCollisionY(player.sprite, platform);
+                   enemy.resolveCollisionY(enemy.sprite, platform);
+                   enemy2.resolveCollisionY(enemy2.sprite, platform);
+               }
+       */
         window.draw(enemy.sprite);
+        window.draw(enemy2.sprite);
         window.draw(player.sprite);          // Рисуем игрока//
         window.draw(scorePlayer.scoreText);  // рисуем счет
 
         window.display();  // Отображаем всё на экране
+                           //        std::cout << 1000000.0f /
+                           //        clock.getElapsedTime().asMicroseconds()
+                           //                << '\n';
+        // clock.restart();
     }
 
     return 0;

@@ -38,6 +38,8 @@ Enemy::Enemy() {
 }
 Enemy::~Enemy(){};
 
+void Enemy::setSpeed(int setSpeed) { speed = setSpeed; }
+
 void Enemy::updateAnimation(float deltaTime) {
     animationTimer += deltaTime;
     switch (EnemyCurrent) {
