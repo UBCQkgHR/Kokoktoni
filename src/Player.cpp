@@ -123,6 +123,9 @@ void Player::moveX(float deltaTime) {
   sprite.move(velocity.x * deltaTime, 0.f);
 };
 
+// *********************самый первый вариан реализации
+// колизий***********************
+//
 /*void Player::resolveCollisionX(sf::Sprite &player,
                                const sf::RectangleShape &platforms) {
     sf::FloatRect playerBounds = player.getGlobalBounds();
@@ -138,7 +141,6 @@ void Player::moveX(float deltaTime) {
         }
         velocity.x = 0;
     }
-    */
 void Player::checkCollisionX(const Level &level) {
   const int TILE = 32;
   sf::FloatRect bounds = sprite.getGlobalBounds();
@@ -171,9 +173,11 @@ void Player::checkCollisionX(const Level &level) {
       }
     }
   }
-}
+}*/
 
-void Player::checkCollisionY(const Level &level) {
+//************старая реализация столкновений, после было выделенов отдельный
+// файл универсальный вариант***********
+/*void Player::checkCollisionY(const Level &level) {
   const int TILE = 32;
   sf::FloatRect bounds = sprite.getGlobalBounds();
   int leftTile = (int)(bounds.left / TILE);
@@ -216,4 +220,4 @@ void Player::resolveCollisionY(sf::Sprite &player,
     }
     velocity.y = 0;
   }
-}
+}*/

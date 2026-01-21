@@ -6,6 +6,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
 #include "Level.h"
@@ -26,7 +27,9 @@ public:
   void moveX(float deltaTime);
 
   void moveY(float deltaTime);
-
+  sf::Vector2f &getVelocity() { return velocity; };
+  sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); };
+  void setPosition(float x, float y) { sprite.setPosition(x, y); };
   /* struct AABB {
        float left, top, right, bottom;
 

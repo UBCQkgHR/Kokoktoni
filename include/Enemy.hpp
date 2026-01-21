@@ -9,37 +9,40 @@
 #include <SFML/System/Vector2.hpp>
 enum class State { Idle, Attack, Left, Right };
 class Enemy {
-   public:
-    sf::Sprite sprite;
-    sf::Texture texture_Idle;
-    sf::Texture texture_Walk;
-    sf::Texture texture_Attack;
-    Enemy();
-    ~Enemy();
-    void setSpeed(int setSpeed);
-    void moveY(float deltaTime);
-    void moveX(float deltaTime);
+public:
+  sf::Sprite sprite;
+  sf::Texture texture_Idle;
+  sf::Texture texture_Walk;
+  sf::Texture texture_Attack;
+  Enemy();
+  ~Enemy();
+  sf::Vector2f &getVelocity() { return velocity; }
+  sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); }
+  void setPosition(float x, float y) { sprite.setPosition(x, y); }
+  void setSpeed(int setSpeed);
+  void moveY(float deltaTime);
+  void moveX(float deltaTime);
 
-    sf::FloatRect bounds;
-    int direction;
-    void resolveCollisionX(sf::Sprite &enemy,
-                           const sf::RectangleShape &platforms);
-    void resolveCollisionY(sf::Sprite &enemy,
-                           const sf::RectangleShape &platforms);
-    void updateAnimation(float deltaTime);
-    void update();
+  sf::FloatRect bounds;
+  int direction;
+  void resolveCollisionX(sf::Sprite &enemy,
+                         const sf::RectangleShape &platforms);
+  void resolveCollisionY(sf::Sprite &enemy,
+                         const sf::RectangleShape &platforms);
+  void updateAnimation(float deltaTime);
+  void update();
 
-   private:
-    int currentFrame = 0;
-    sf::Vector2f desiredSize;
-    float animationTimer = 0.1f;
-    float frameDuration = 0.1f;
-    int totalFrames = 4;
-    bool wallhit = false;
-    sf::Vector2f rect;
-    sf::Vector2f velocity;
-    float gravity = 20.f;
-    State EnemyCurrent = State::Right;
-    int speed;
+private:
+  int currentFrame = 0;
+  sf::Vector2f desiredSize;
+  float animationTimer = 0.1f;
+  float frameDuration = 0.1f;
+  int totalFrames = 4;
+  bool wallhit = false;
+  sf::Vector2f rect;
+  sf::Vector2f velocity;
+  float gravity = 20.f;
+  State EnemyCurrent = State::Right;
+  int speed;
 };
 #endif

@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "../include/Enemy.hpp"
+#include "../include/Game.h"
 #include "../include/Item.hpp"
 #include "../include/Level.h"
 #include "../include/Player.h"
@@ -19,7 +20,7 @@ int main() {
   // Создаём окно
   sf::RenderWindow window(sf::VideoMode(1024, 768), "Kokotoni Wilf");
   window.setFramerateLimit(60);
-
+  Game game;
   Enemy enemy;
   Enemy enemy2;
   Player player;
@@ -62,9 +63,12 @@ int main() {
     enemy.update();  // обновление Враw
     enemy2.update(); // обновление Враw
     player.moveX(deltaTime.asSeconds());
-    player.checkCollisionX(level);
     enemy.moveX(deltaTime.asSeconds());
     enemy2.moveX(deltaTime.asSeconds());
+    game.checkCollisionX(enemy, level);
+    game.checkCollisionX(player, level);
+    game.checkCollisionX(enemy2, level);
+
     player.updateAnimation(deltaTime.asSeconds()); // анимация  игрока
     enemy.updateAnimation(deltaTime.asSeconds()); // анимация Врага.
     enemy2.updateAnimation(deltaTime.asSeconds()); // анимация Врага.
@@ -75,8 +79,11 @@ int main() {
      }
 */
     player.moveY(deltaTime.asSeconds()); // передвигаем игрока
-    player.checkCollisionY(level);
+    // player.checkCollisionY(level);
     enemy.moveY(deltaTime.asSeconds());
+    game.checkCollisionY(enemy, level);
+    game.checkCollisionY(player, level);
+    /*       for (auto &platform : level.platforms_collision) {
     /*       for (auto &platform : level.platforms_collision) {
                player.resolveCollisionY(player.sprite, platform);
                enemy.resolveCollisionY(enemy.sprite, platform);
