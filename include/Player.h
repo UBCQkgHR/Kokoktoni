@@ -14,65 +14,76 @@
 enum class PlayerState { Idle, Walk, RunLeft, RunRight, Jump, Fall, Attack };
 
 class Player {
-public:
-  int frameAttak[5]{85, 92, 80, 135, 116};
-  sf::Sprite sprite;
-  sf::Texture texture;
-  sf::Texture texture_Idle;
-  sf::Texture texture_Attack;
-  sf::Texture texture_Walk;
-  float speed = 200.0f;
-  int direction;
-  int score = 0;
-  float ScaleX = 0.5;
-  float ScaleY = 0.5;
-  Player();
-  ~Player();
-  void moveX(float deltaTime);
+   public:
+    sf::Sprite sprite;
+    sf::Texture texture;
+    sf::Texture texture_Idle;
+    sf::Texture texture_Attack;
+    sf::Texture texture_Walk;
+    float speed = 200.0f;
 
-  void moveY(float deltaTime);
-  sf::Vector2f &getVelocity() { return velocity; };
-  sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); };
-  void setPosition(float x, float y) { sprite.setPosition(x, y); };
-  /* struct AABB {
-       float left, top, right, bottom;
+    int health = 3;
+    int maxhealth = 3;
+    void takeDamage(int damage = 1);
+    void heal(int amount = 1);
+    bool isAlive() const { return health > 0; }
 
-       AABB(const sf::FloatRect &bounds) {
-           left = bounds.left;
-           top = bounds.top;
-           right = bounds.left + bounds.width;
-           bottom = bounds.top + bounds.height;
-       }
-   };
-     void resolveCollision(sf::Sprite &player,
+    int score = 0;
+    Player();
+    ~Player();
+    void moveX(float deltaTime);
+
+    void moveY(float deltaTime);
+    sf::Vector2f &getVelocity() { return velocity; };
+    sf::FloatRect getBounds() const { return sprite.getGlobalBounds(); };
+    void setPosition(float x, float y) { sprite.setPosition(x, y); };
+    /* struct AABB {
+         float left, top, right, bottom;
+
+         AABB(const sf::FloatRect &bounds) {
+             left = bounds.left;
+             top = bounds.top;
+             right = bounds.left + bounds.width;
+             bottom = bounds.top + bounds.height;
+         }
+     };
+       void resolveCollision(sf::Sprite &player,
+                             const sf::RectangleShape &platforms);
+     */
+
+    void resolveCollisionX(sf::Sprite &player,
                            const sf::RectangleShape &platforms);
-   */
 
-  void resolveCollisionX(sf::Sprite &player,
-                         const sf::RectangleShape &platforms);
+    void resolveCollisionY(sf::Sprite &player,
+                           const sf::RectangleShape &platforms);
 
-  void resolveCollisionY(sf::Sprite &player,
-                         const sf::RectangleShape &platforms);
+    void updateAnimation(float deltaTime);
+    //  void checkCollisionX(const Level &level);
+    void setIsJump(bool value);
+    bool getIsJump() const;
+    // void checkCollisionY(const Level &level);
+    void updateInvincibility(float deltaTime);
+    bool getIsInvicible();
 
-  void updateAnimation(float deltaTime);
-  void checkCollisionX(const Level &level);
-  void checkCollisionY(const Level &level);
-
-private:
-  int currentFrame = 0;
-  float animationTimer = 0.f;
-  float frameDuration = 0.1f;
-  int totalFrames = 4;
-  sf::Vector2f velocity; // скорость по х и у
-  float gravity = 100.f;
-  float jumpStrength = -200.f;
-  sf::FloatRect bounds;
-  sf::Vector2f desiredSize;
-  PlayerState currentState;
-  int tileleft, tileright, tiletop, tilebottom;
-  float tileSize = 32;
-  float left, top, right, bottom;
-  bool collision;
+   private:
+    bool IsInvincible = false;
+    float IsInvincibleTimer = 0.f;
+    float IsInvincibleDuration = 1.5f;
+    int currentFrame = 0;
+    float animationTimer = 0.f;
+    float frameDuration = 0.1f;
+    int totalFrames = 4;
+    sf::Vector2f velocity;  // скорость по х и у
+    float gravity = 100.f;
+    float jumpStrength = -200.f;
+    sf::FloatRect bounds;
+    sf::Vector2f desiredSize;
+    PlayerState currentState;
+    int tileleft, tileright, tiletop, tilebottom;
+    float tileSize = 32;
+    float left, top, right, bottom;
+    bool collision;
+    bool IsJump = false;
 };
 
 #endif
