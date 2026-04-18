@@ -25,10 +25,11 @@ public:
 
   sf::FloatRect bounds;
   int direction;
-  void resolveCollisionX(sf::Sprite &enemy,
-                         const sf::RectangleShape &platforms);
-  void resolveCollisionY(sf::Sprite &enemy,
-                         const sf::RectangleShape &platforms);
+  /*  void resolveCollisionX(sf::Sprite &enemy,
+                          const sf::RectangleShape &platforms);
+    void resolveCollisionY(sf::Sprite &enemy,
+                           const sf::RectangleShape &platforms);
+   */
   void updateAnimation(float deltaTime);
   void update();
 
@@ -42,7 +43,7 @@ private:
   sf::Vector2f rect;
   sf::Vector2f velocity;
   float gravity = 20.f;
-  State EnemyCurrent = State::Right;
+  State Current = State::Right;
   int speed;
 };
 #endif

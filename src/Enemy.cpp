@@ -35,13 +35,13 @@ Enemy::Enemy() {
   sprite.setScale(desiredSize.x / localBounds.width,
                   desiredSize.y / localBounds.height);
 }
-Enemy::~Enemy(){};
+Enemy::~Enemy() {};
 
 void Enemy::setSpeed(int setSpeed) { speed = setSpeed; }
 
 void Enemy::updateAnimation(float deltaTime) {
   animationTimer += deltaTime;
-  switch (EnemyCurrent) {
+  switch (Current) {
   case State::Attack:
     if (animationTimer >= frameDuration) {
       animationTimer = 0.f;
@@ -99,7 +99,7 @@ void Enemy::moveX(float deltaTime) {
   // };
   sprite.move(velocity.x * deltaTime, 0.f);
 };
-
+/*
 void Enemy::resolveCollisionX(sf::Sprite &enemy,
                               const sf::RectangleShape &platforms) {
   sf::FloatRect enemyBounds = enemy.getGlobalBounds();
@@ -118,15 +118,16 @@ void Enemy::resolveCollisionX(sf::Sprite &enemy,
     //  wallhit = true;
   }
 }
-
+*/
 void Enemy::update() {
   // if (wallhit) {
   //    direction *= -1;
   //    wallhit = false;
   // }
   velocity.x = direction * speed;
-  EnemyCurrent = (direction > 0) ? State::Right : State::Left;
+  Current = (direction > 0) ? State::Right : State::Left;
 }
+/*
 void Enemy::resolveCollisionY(sf::Sprite &enemy,
                               const sf::RectangleShape &platforms) {
   sf::FloatRect enemyBounds = enemy.getGlobalBounds();
@@ -142,3 +143,4 @@ void Enemy::resolveCollisionY(sf::Sprite &enemy,
     velocity.y = 0;
   }
 }
+*/

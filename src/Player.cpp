@@ -35,8 +35,10 @@ Player::Player() {
   std::cout << "Rect: " << rect.width << "x" << rect.height << std::endl;
 
   bounds = sprite.getGlobalBounds();
-  sprite.setScale(desiredSize.x / localBounds.width,
-                  desiredSize.y / localBounds.height);
+  ScaleX = desiredSize.x / localBounds.width;
+  ScaleY = desiredSize.y / localBounds.height;
+  // sprite.setScale(desiredSize.x / localBounds.width,
+  //                desiredSize.y / localBounds.height);
   sprite.setPosition(100.f, 100.f);
   currentFrame = 0;
   animationTimer = 0.f;
@@ -60,7 +62,9 @@ void Player::updateAnimation(float deltaTime) {
       totalFrames = 5;
       currentFrame = (currentFrame + 1) % totalFrames;
       sprite.setTexture(texture_Attack);
-      sprite.setTextureRect(sf::IntRect((currentFrame * 128), 37, 128, 91));
+
+      sprite.setTextureRect(
+          sf::IntRect((currentFrame * frameAttak[currentFrame]), 37, 128, 91));
     }
     break;
   case PlayerState::Idle:
@@ -70,7 +74,7 @@ void Player::updateAnimation(float deltaTime) {
       currentFrame = (currentFrame + 1) % totalFrames;
       sprite.setTexture(texture_Idle);
       sprite.setTextureRect(sf::IntRect(currentFrame * 128 + 20, 37, 67, 91));
-    }
+    };
     break;
 
   case PlayerState::RunLeft:
@@ -110,9 +114,11 @@ void Player::moveX(float deltaTime) {
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
     velocity.x = -100.f;
     currentState = PlayerState::RunLeft;
+    direction = -1;
   } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
     velocity.x = 100.f;
     currentState = PlayerState::RunRight;
+    direction = 1;
   } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
     currentState = PlayerState::Attack;
   } else {

@@ -6,6 +6,11 @@ class Game {
 public:
   Game();
   ~Game();
+  // универсальная функции описывающая колизизи. используется вхдные арументы и
+  // для игрока и для врагов. &obj любой вводный обьект (игрок ,варг  и т.д )
+  // для кого необходимо просчитывать колизии с картой. вычисление выполняются
+  // только для соседний тайлов с объектом.
+  //**************************************************************************
 
   template <typename T> void checkCollisionX(T &obj, const Level &level) {
     const int TILE = 32;
@@ -26,6 +31,7 @@ public:
         if (level.mapColisium[index] == 1) {
           obj.setPosition(rightTile * TILE - bounds.width, bounds.top);
           velocity.x = 0;
+          obj.direction *= -1;
           break;
         }
       }
@@ -37,6 +43,7 @@ public:
         if (level.mapColisium[index] == 1) {
           obj.setPosition((leftTile + 1) * TILE, bounds.top);
           velocity.x = 0;
+          obj.direction *= -1;
           break;
         }
       }
@@ -74,4 +81,5 @@ public:
     }
   }
 };
+//************************************************************
 #endif

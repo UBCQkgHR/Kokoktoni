@@ -15,13 +15,17 @@ enum class PlayerState { Idle, Walk, RunLeft, RunRight, Jump, Fall, Attack };
 
 class Player {
 public:
+  int frameAttak[5]{85, 92, 80, 135, 116};
   sf::Sprite sprite;
   sf::Texture texture;
   sf::Texture texture_Idle;
   sf::Texture texture_Attack;
   sf::Texture texture_Walk;
   float speed = 200.0f;
+  int direction;
   int score = 0;
+  float ScaleX = 0.5;
+  float ScaleY = 0.5;
   Player();
   ~Player();
   void moveX(float deltaTime);

@@ -84,7 +84,7 @@ int main() {
     game.checkCollisionY(enemy, level);
     game.checkCollisionY(player, level);
     /*       for (auto &platform : level.platforms_collision) {
-    /*       for (auto &platform : level.platforms_collision) {
+           for (auto &platform : level.platforms_collision) {
                player.resolveCollisionY(player.sprite, platform);
                enemy.resolveCollisionY(enemy.sprite, platform);
                enemy2.resolveCollisionY(enemy2.sprite, platform);
