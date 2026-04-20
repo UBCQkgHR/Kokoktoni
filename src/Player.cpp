@@ -5,6 +5,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -48,9 +49,40 @@ Player::Player() {
     tiletop = top / tileSize;
     tilebottom = bottom / tileSize;
     bool collision = false;
+    // настройка Хитбокса атаки
+    m_attackSetting.size = {50.f, 50.f};
+    m_attackSetting.offset = {40.f, 20.f};
+    m_attackSetting.damage = 1;
+    m_attackSetting.knockback = 300.f;
+    m_attackSetting.activeDuration = 0.2f;
+
+    m_isAttacking = false;
+    m_attackTimer = 0.f;
+    m_attackCooldown = 0.f;
+    m_factingRight = true;
 }
 
 Player::~Player(){};
+sf::FloatRect Player::getAttackHitbox() const {
+    float playerCenterX = bounds.left + bounds.width / 2;
+    float playerCenterY = bounds.top + bounds.height / 2;
+    // Начальная позиция ( по центру игрока)
+    float hitboxX = playerCenterX - m_attackSetting.size.x / 2;
+    float hitboxY = playerCenterY - m_attackSetting.size.y / 2;
+    // если в право смотрит игрок  - хитбок справа
+    if (m_factingRight) {
+        hitboxX = playerCenterX + m_attackSetting.offset.x;
+    } else {
+        hitboxX =
+            playerCenterX - m_attackSetting.size.x - m_attackSetting.offset.x;
+    }
+    // смещение по оси У
+    hitboxY =
+        playerCenterY - m_attackSetting.size.y / 2 + m_attackSetting.offset.y;
+    return sf ::FloatRect(hitboxX, hitboxX, m_attackSetting.size.x,
+                          m_attackSetting.size.y);
+}
+
 void Player::takeDamage(int damage) {
     if (IsInvincible) return;
     if (health <= 0) return;
@@ -127,6 +159,39 @@ void Player::updateAnimation(float deltaTime) {
             break;
     }
 }
+void Player::drawAttackhitbox(sf::RenderWindow& Window) const {
+    if (!m_isAttacking) return;
+    sf::FloatRect hitbox = getAttackHitbox();
+    sf::RectangleShape debugBox;
+    debugBox.setPosition(hitbox.left, hitbox.top);
+    debugBox.setSize(sf::Vector2f(hitbox.width, hitbox.height));
+    debugBox.setFillColor(sf::Color::Transparent);
+    debugBox.setOutlineColor(sf::Color::Cyan);
+    debugBox.setOutlineThickness(2.f);
+    Window.draw(debugBox);
+}
+void Player::attack() {
+    if (m_attackCooldown > 0.f) return;
+    if (m_isAttacking) return;
+    m_isAttacking = true;
+    m_attackTimer = 0.f;
+    m_attackCooldown = m_attackSetting.activeDuration + 0.35f;
+    currentState = PlayerState::Attack;
+}
+void Player::updateAttack(float deltaTime) {
+    if (m_attackCooldown > 0.1f) {
+        m_attackCooldown -= deltaTime;
+    }
+    if (m_isAttacking) {
+        m_attackTimer += deltaTime;
+        if (m_attackTimer >= m_attackSetting.activeDuration) {
+            m_isAttacking = false;
+            if (currentState == PlayerState::Attack) {
+                currentState = PlayerState::Idle;
+            }
+        }
+    }
+}
 void Player::setIsJump(bool value) { IsJump = value; };
 bool Player::getIsJump() const { return IsJump; };
 void Player::moveY(float deltaTime) {
@@ -146,11 +211,17 @@ void Player::moveX(float deltaTime) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         velocity.x = -100.f;
         currentState = PlayerState::RunLeft;
+        m_factingRight = false;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         velocity.x = 100.f;
         currentState = PlayerState::RunRight;
+        m_factingRight = true;
+    } else if (!m_isAttacking) {
+        velocity.x = 0.f;
+        currentState = PlayerState::Idle;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        currentState = PlayerState::Attack;
+        //  currentState = PlayerState::Attack;
+        attack();
     } else {
         velocity.x = 0.f;
         currentState = PlayerState::Idle;
@@ -185,16 +256,12 @@ void Player::checkCollisionX(const Level &level) {
       (int)(bounds.top / TILE); // координата по Y(  верхний левый угол)
   int bottomTile =
       (int)((bounds.top + bounds.height - 1) /
-            TILE); // координата нижне точки по левому краю( левый нижний угол )
-  if (velocity.x > 0) {
-    int rightTile =
-        (int)((bounds.left + bounds.width) / TILE); // верхний правый угол
-    for (int y = topTile; y <= bottomTile; ++y) {
-      int index = y * level.x_size + rightTile;
-      if (level.mapColisium[index] == 1) {
-        sprite.setPosition(rightTile * TILE - bounds.width, bounds.top);
-        velocity.x = 0;
-        break;
+            TILE); // координата нижне точки по левому краю( левый нижний
+угол ) if (velocity.x > 0) { int rightTile = (int)((bounds.left +
+bounds.width) / TILE); // верхний правый угол for (int y = topTile; y <=
+bottomTile; ++y) { int index = y * level.x_size + rightTile; if
+(level.mapColisium[index] == 1) { sprite.setPosition(rightTile * TILE -
+bounds.width, bounds.top); velocity.x = 0; break;
       }
     }
   } else if (velocity.x < 0) {
