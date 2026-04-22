@@ -12,253 +12,261 @@
 #include <iostream>
 
 Player::Player() {
-    desiredSize.x = 63.f;
-    desiredSize.y = 64.f;
+  desiredSize.x = 63.f;
+  desiredSize.y = 64.f;
 
-    if (!(texture_Idle.loadFromFile("../asset/Idle.png"))) {
-        printf("%s", "Don`t load file Idle Player!");
-    };
+  if (!(texture_Idle.loadFromFile("../asset/Idle.png"))) {
+    printf("%s", "Don`t load file Idle Player!");
+  };
 
-    if (!(texture_Walk.loadFromFile("../asset/Walk.png"))) {
-        printf("%s", "Don`t load file walki_player !");
-    };
+  if (!(texture_Walk.loadFromFile("../asset/Walk.png"))) {
+    printf("%s", "Don`t load file walki_player !");
+  };
 
-    if (!(texture_Attack.loadFromFile("../asset/Attack.png"))) {
-        printf("%s", "Don`t load file walki_player !");
-    };
-    sprite.setTexture(texture_Idle);
-    sprite.setTextureRect(sf::IntRect(20, 30, 128, 128));
-    sprite.setPosition(100.0f, 100.0f);
-    // sprite.setScale(desiredSize.x / bounds.width, desiredSize.y /
-    // bounds.height);
-    sf::FloatRect localBounds = sprite.getLocalBounds();
-    sf::IntRect rect = sprite.getTextureRect();
+  if (!(texture_Attack.loadFromFile("../asset/Attack.png"))) {
+    printf("%s", "Don`t load file walki_player !");
+  };
+  sprite.setTexture(texture_Idle);
+  sprite.setTextureRect(sf::IntRect(20, 30, 128, 128));
+  sprite.setPosition(100.0f, 100.0f);
+  // sprite.setScale(desiredSize.x / bounds.width, desiredSize.y /
+  // bounds.height);
+  sf::FloatRect localBounds = sprite.getLocalBounds();
+  sf::IntRect rect = sprite.getTextureRect();
 
-    std::cout << "Rect: " << rect.width << "x" << rect.height << std::endl;
+  std::cout << "Rect: " << rect.width << "x" << rect.height << std::endl;
 
-    bounds = sprite.getGlobalBounds();
-    sprite.setScale(desiredSize.x / localBounds.width,
-                    desiredSize.y / localBounds.height);
-    sprite.setPosition(100.f, 100.f);
-    currentFrame = 0;
-    animationTimer = 0.f;
-    frameDuration = 0.1f;
-    totalFrames = 3;
-    tileleft = left / tileSize;
-    tileright = right / tileSize;
-    tiletop = top / tileSize;
-    tilebottom = bottom / tileSize;
-    bool collision = false;
-    // настройка Хитбокса атаки
-    m_attackSetting.size = {50.f, 50.f};
-    m_attackSetting.offset = {40.f, 20.f};
-    m_attackSetting.damage = 1;
-    m_attackSetting.knockback = 300.f;
-    m_attackSetting.activeDuration = 0.2f;
+  bounds = sprite.getGlobalBounds();
+  sprite.setScale(desiredSize.x / localBounds.width,
+                  desiredSize.y / localBounds.height);
+  sprite.setPosition(100.f, 100.f);
+  currentFrame = 0;
+  //  sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+  animationTimer = 0.f;
+  frameDuration = 0.15f;
+  totalFrames = 3;
+  tileleft = left / tileSize;
+  tileright = right / tileSize;
+  tiletop = top / tileSize;
+  tilebottom = bottom / tileSize;
+  bool collision = false;
+  // настройка Хитбокса атаки
+  m_attackSetting.size = {50.f, 50.f};
+  m_attackSetting.offset = {40.f, 20.f};
+  m_attackSetting.damage = 1;
+  m_attackSetting.knockback = 300.f;
+  m_attackSetting.activeDuration = 0.75f;
 
-    m_isAttacking = false;
-    m_attackTimer = 0.f;
-    m_attackCooldown = 0.f;
-    m_factingRight = true;
+  m_isAttacking = false;
+  m_attackTimer = 0.f;
+  m_attackCooldown = 0.f;
+  m_factingRight = true;
 }
 
 Player::~Player(){};
 sf::FloatRect Player::getAttackHitbox() const {
-    sf::FloatRect bound = sprite.getGlobalBounds();
-    float playerCenterX = bound.left + bound.width / 2;
-    float playerCenterY = bound.top + bound.height / 2;
-    // Начальная позиция ( по центру игрока)
-    float hitboxX = playerCenterX - m_attackSetting.size.x / 2;
-    float hitboxY = playerCenterY - m_attackSetting.size.y / 2;
-    std ::cout << "Player centr X :" << playerCenterX
-               << "Player centr Y :" << playerCenterY << std::endl;
-    // если в право смотрит игрок  - хитбок справа
-    if (m_factingRight) {
-        hitboxX = playerCenterX + m_attackSetting.offset.x;
-    } else {
-        hitboxX =
-            playerCenterX - m_attackSetting.size.x - m_attackSetting.offset.x;
-    }
-    // смещение по оси У
-    hitboxY =
-        playerCenterY - m_attackSetting.size.y / 2 + m_attackSetting.offset.y;
-    return sf ::FloatRect(hitboxX, hitboxY, m_attackSetting.size.x,
-                          m_attackSetting.size.y);
+  sf::FloatRect bound = sprite.getGlobalBounds();
+  float playerCenterX = bound.left + bound.width / 2;
+  float playerCenterY = bound.top + bound.height / 2;
+  // Начальная позиция ( по центру игрока)
+  float hitboxX = playerCenterX - m_attackSetting.size.x / 2;
+  float hitboxY = playerCenterY - m_attackSetting.size.y / 2;
+  std ::cout << "Player centr X :" << playerCenterX
+             << "Player centr Y :" << playerCenterY << std::endl;
+  // если в право смотрит игрок  - хитбок справа
+  if (m_factingRight) {
+    hitboxX = playerCenterX + m_attackSetting.offset.x;
+  } else {
+    hitboxX = playerCenterX - m_attackSetting.size.x - m_attackSetting.offset.x;
+  }
+  // смещение по оси У
+  hitboxY =
+      playerCenterY - m_attackSetting.size.y / 2 + m_attackSetting.offset.y;
+  return sf ::FloatRect(hitboxX, hitboxY, m_attackSetting.size.x,
+                        m_attackSetting.size.y);
 }
 
 void Player::takeDamage(int damage) {
-    if (IsInvincible) return;
-    if (health <= 0) return;
-    health -= damage;
-    IsInvincible = true;
-    IsInvincibleTimer = 0.f;
-    if (health > 0) {
-        sprite.setColor(sf::Color(255, 255, 255, 128));
-    } else {
-        health = 0;
-        sprite.setColor(sf::Color(255, 0, 0, 255));
-    }
+  if (IsInvincible)
+    return;
+  if (health <= 0)
+    return;
+  health -= damage;
+  IsInvincible = true;
+  IsInvincibleTimer = 0.f;
+  if (health > 0) {
+    sprite.setColor(sf::Color(255, 255, 255, 128));
+  } else {
+    health = 0;
+    sprite.setColor(sf::Color(255, 0, 0, 255));
+  }
 }
 void Player::heal(int amount) {
-    health += amount;
-    if (health > maxhealth) health = maxhealth;
+  health += amount;
+  if (health > maxhealth)
+    health = maxhealth;
 }
 void Player::updateInvincibility(float deltaTime) {
-    if (IsInvincible) {
-        IsInvincibleTimer += deltaTime;
-        if (IsInvincibleTimer >= IsInvincibleDuration) {
-            IsInvincible = false;
-            sprite.setColor(sf::Color::White);
-        }
+  if (IsInvincible) {
+    IsInvincibleTimer += deltaTime;
+    if (IsInvincibleTimer >= IsInvincibleDuration) {
+      IsInvincible = false;
+      sprite.setColor(sf::Color::White);
     }
+  }
 }
 bool Player::getIsInvicible() { return IsInvincible; }
 
 void Player::updateAnimation(float deltaTime) {
-    animationTimer += deltaTime;
-
-    switch (currentState) {
-        case PlayerState::Attack:
-            if (isAttacking() && animationTimer >= frameDuration) {
-                // начинаем атаку
-                currentFrame = (currentFrame + 1) % totalFrames;
-
-                totalFrames = 5;
-                animationTimer = 0.f;
-                currentFrame++;
-                if (currentFrame >= totalFrames) {
-                    currentFrame = 0;
-                }
-
-                sprite.setTexture(texture_Attack);
-                sprite.setTextureRect(
-                    sf::IntRect((currentFrame * 128), 37, 128, 91));
-            }
-            if (!isAttacking()) {
-                currentState = PlayerState::Idle;
-                currentFrame = 0.f;
-                animationTimer = 0.f;
-            }
-            break;
-        case PlayerState::Idle:
-            if (!isAttacking() && animationTimer >= frameDuration) {
-                animationTimer = 0.f;
-                totalFrames = 10;
-                currentFrame = (currentFrame + 1) % totalFrames;
-                sprite.setTexture(texture_Idle);
-                sprite.setTextureRect(
-                    sf::IntRect(currentFrame * 128 + 20, 37, 67, 91));
-            }
-            break;
-
-        case PlayerState::RunLeft:
-            if (!isAttacking() && animationTimer >= frameDuration) {
-                animationTimer = 0.f;
-                currentFrame = (currentFrame + 1) % totalFrames;
-                totalFrames = 12;
-                sprite.setTexture(texture_Walk);
-                sprite.setTextureRect(
-                    sf::IntRect((currentFrame * 128) + 128 - 40, 37, -67, 91));
-            }
-            break;
-        case PlayerState::RunRight:
-            if (!isAttacking() && animationTimer >= frameDuration) {
-                animationTimer = 0.f;
-                totalFrames = 12;
-                currentFrame = (currentFrame + 1) % totalFrames;
-                sprite.setTexture(texture_Walk);
-                sprite.setTextureRect(
-                    sf::IntRect((currentFrame * 128) + 20, 37, 67, 91));
-            }
-
-            break;
+  animationTimer += deltaTime;
+  if (isAttacking() && animationTimer >= frameDuration) {
+    // currentFrame  (currentFrame + 1) % totalFrames;
+    totalFrames = 5;
+    animationTimer = 0.f;
+    currentFrame++;
+    if (currentFrame >= totalFrames) {
+      currentFrame = 0;
     }
+
+    sprite.setTexture(texture_Attack);
+    sprite.setTextureRect(sf::IntRect((currentFrame * 128), 37, 128, 91));
+  }
+  switch (currentState) {
+  case PlayerState::Attack:
+    if (isAttacking() && animationTimer >= frameDuration) {
+      // начинаем атаку
+      currentFrame = (currentFrame + 1) % totalFrames;
+
+      totalFrames = 5;
+      animationTimer = 0.f;
+      currentFrame++;
+      if (currentFrame >= totalFrames) {
+        currentFrame = 0;
+      }
+      sprite.setTexture(texture_Attack);
+      sprite.setTextureRect(sf::IntRect((currentFrame * 128), 37, 128, 91));
+      sprite.setScale(1.f, 1.f);
+    }
+
+    break;
+  case PlayerState::Idle:
+    if (!isAttacking() && animationTimer >= frameDuration) {
+      animationTimer = 0.f;
+      totalFrames = 10;
+      currentFrame = (currentFrame + 1) % totalFrames;
+      sprite.setTexture(texture_Idle);
+      sprite.setTextureRect(sf::IntRect(currentFrame * 128 + 20, 37, 67, 91));
+    }
+    break;
+
+  case PlayerState::RunLeft:
+    if (!isAttacking() && animationTimer >= frameDuration) {
+      animationTimer = 0.f;
+      currentFrame = (currentFrame + 1) % totalFrames;
+      totalFrames = 12;
+      sprite.setTexture(texture_Walk);
+      sprite.setTextureRect(
+          sf::IntRect((currentFrame * 128) + 128 - 40, 37, -67, 91));
+    }
+    break;
+  case PlayerState::RunRight:
+    if (!isAttacking() && animationTimer >= frameDuration) {
+      animationTimer = 0.f;
+      totalFrames = 12;
+      currentFrame = (currentFrame + 1) % totalFrames;
+      sprite.setTexture(texture_Walk);
+      sprite.setTextureRect(sf::IntRect((currentFrame * 128) + 20, 37, 67, 91));
+    }
+
+    break;
+  }
 }
-void Player::drawAttackhitbox(sf::RenderWindow& Window) const {
-    if (!m_isAttacking) return;
-    sf::FloatRect hitbox = getAttackHitbox();
-    sf::RectangleShape debugBox;
-    debugBox.setPosition(hitbox.left, hitbox.top);
-    debugBox.setSize(sf::Vector2f(hitbox.width, hitbox.height));
-    debugBox.setFillColor(sf::Color::Transparent);
-    debugBox.setOutlineColor(sf::Color::Cyan);
-    debugBox.setOutlineThickness(2.f);
-    Window.draw(debugBox);
+void Player::drawAttackhitbox(sf::RenderWindow &Window) const {
+  if (!m_isAttacking)
+    return;
+  sf::FloatRect hitbox = getAttackHitbox();
+  sf::RectangleShape debugBox;
+  debugBox.setPosition(hitbox.left, hitbox.top);
+  debugBox.setSize(sf::Vector2f(hitbox.width, hitbox.height));
+  debugBox.setFillColor(sf::Color::Transparent);
+  debugBox.setOutlineColor(sf::Color::Cyan);
+  debugBox.setOutlineThickness(2.f);
+  Window.draw(debugBox);
 }
 void Player::attack() {
-    if (m_attackCooldown > 0.f) {
-        std::cout << "Cooldow" << std::endl;
-        return;
-    }
-    if (m_isAttacking) {
-        std::cout << "already attak" << std::endl;
-        return;
-    }
-    std::cout << " Start attack" << std::endl;
-    m_isAttacking = true;
-    m_attackTimer = 0.f;
-    currentFrame = 0;
-    animationTimer = 0.f;
-    m_attackCooldown = m_attackSetting.activeDuration + 0.35f;
-    if (!isAttacking()) currentState = PlayerState::Attack;
+  if (m_attackCooldown > 0.f) {
+    std::cout << "Cooldow" << std::endl;
+    return;
+  }
+  if (m_isAttacking) {
+    std::cout << "already attak" << std::endl;
+    return;
+  }
+  std::cout << " Start attack" << std::endl;
+  m_isAttacking = true;
+  m_attackTimer = 0.f;
+  currentFrame = 0;
+  animationTimer = 0.f;
+  m_attackCooldown = m_attackSetting.activeDuration + 0.35f;
+  if (!isAttacking())
+    currentState = PlayerState::Attack;
 }
 void Player::updateAttack(float deltaTime) {
-    std::cout << m_attackCooldown << std::endl;
-    if (m_attackCooldown > 0.0f) {
-        m_attackCooldown -= deltaTime;
+  std::cout << m_attackCooldown << std::endl;
+  if (m_attackCooldown > 0.0f) {
+    m_attackCooldown -= deltaTime;
+  }
+  if (m_isAttacking) {
+    m_attackTimer += deltaTime;
+    if (m_attackTimer >= m_attackSetting.activeDuration) {
+      m_isAttacking = false;
+      m_attackCooldown = 0.5f;
+      if (currentState == PlayerState::Attack) {
+        currentState = PlayerState::Idle;
+      }
     }
-    if (m_isAttacking) {
-        m_attackTimer += deltaTime;
-        if (m_attackTimer >= m_attackSetting.activeDuration) {
-            m_isAttacking = false;
-            m_attackCooldown = 0.5f;
-            if (currentState == PlayerState::Attack) {
-                currentState = PlayerState::Idle;
-            }
-        }
-    }
+  }
 }
 void Player::setIsJump(bool value) { IsJump = value; };
 bool Player::getIsJump() const { return IsJump; };
 void Player::moveY(float deltaTime) {
-    velocity.y += gravity * deltaTime;
-    if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key::Space)) &&
-        IsJump != true) {
-        velocity.y = jumpStrength;
-        IsJump = true;
-    }
-    // velocity.x = 0.f;
+  velocity.y += gravity * deltaTime;
+  if (sf::Keyboard::isKeyPressed((sf::Keyboard::Key::Space)) &&
+      IsJump != true) {
+    velocity.y = jumpStrength;
+    IsJump = true;
+  }
+  // velocity.x = 0.f;
 
-    sprite.move(0.f, velocity.y * deltaTime);
+  sprite.move(0.f, velocity.y * deltaTime);
 };
 
 void Player::moveX(float deltaTime) {
-    // velocity.y = 0;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        velocity.x = -100.f;
-        if (!isAttacking()) {
-            currentState = PlayerState::RunLeft;
-        }
-        m_factingRight = false;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        velocity.x = 100.f;
-        if (!isAttacking()) {
-            currentState = PlayerState::RunRight;
-        }
-        m_factingRight = true;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        std::cout << "press A"
-                  << std::endl;  //  currentState = PlayerState::Attack;
-        attack();
-    } else if (!m_isAttacking) {
-        velocity.x = 0.f;
-        currentState = PlayerState::Idle;
-    } else {
-        velocity.x = 0.f;
-        currentState = PlayerState::Idle;
+  // velocity.y = 0;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    velocity.x = -100.f;
+    if (!isAttacking()) {
+      currentState = PlayerState::RunLeft;
     }
+    m_factingRight = false;
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    velocity.x = 100.f;
+    if (!isAttacking()) {
+      currentState = PlayerState::RunRight;
+    }
+    m_factingRight = true;
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+    std::cout << "press A" << std::endl; //  currentState = PlayerState::Attack;
+    attack();
+  } else if (!m_isAttacking) {
+    velocity.x = 0.f;
+    currentState = PlayerState::Idle;
+  } else {
+    velocity.x = 0.f;
+    currentState = PlayerState::Idle;
+  }
 
-    sprite.move(velocity.x * deltaTime, 0.f);
+  sprite.move(velocity.x * deltaTime, 0.f);
 };
 
 // *********************самый первый вариан реализации

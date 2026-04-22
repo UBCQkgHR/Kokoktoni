@@ -49,6 +49,8 @@ public:
           obj.setPosition((leftTile + 1) * TILE, bounds.top);
           velocity.x = -velocity.x;
 
+          obj.direction = -obj.direction;
+
           break;
         }
       }
