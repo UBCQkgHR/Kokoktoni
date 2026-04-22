@@ -64,11 +64,14 @@ Player::Player() {
 
 Player::~Player(){};
 sf::FloatRect Player::getAttackHitbox() const {
-    float playerCenterX = bounds.left + bounds.width / 2;
-    float playerCenterY = bounds.top + bounds.height / 2;
+    sf::FloatRect bound = sprite.getGlobalBounds();
+    float playerCenterX = bound.left + bound.width / 2;
+    float playerCenterY = bound.top + bound.height / 2;
     // Начальная позиция ( по центру игрока)
     float hitboxX = playerCenterX - m_attackSetting.size.x / 2;
     float hitboxY = playerCenterY - m_attackSetting.size.y / 2;
+    std ::cout << "Player centr X :" << playerCenterX
+               << "Player centr Y :" << playerCenterY << std::endl;
     // если в право смотрит игрок  - хитбок справа
     if (m_factingRight) {
         hitboxX = playerCenterX + m_attackSetting.offset.x;
@@ -79,7 +82,7 @@ sf::FloatRect Player::getAttackHitbox() const {
     // смещение по оси У
     hitboxY =
         playerCenterY - m_attackSetting.size.y / 2 + m_attackSetting.offset.y;
-    return sf ::FloatRect(hitboxX, hitboxX, m_attackSetting.size.x,
+    return sf ::FloatRect(hitboxX, hitboxY, m_attackSetting.size.x,
                           m_attackSetting.size.y);
 }
 
@@ -116,17 +119,29 @@ void Player::updateAnimation(float deltaTime) {
 
     switch (currentState) {
         case PlayerState::Attack:
-            if (animationTimer >= frameDuration) {
-                animationTimer = 0.f;
-                totalFrames = 5;
+            if (isAttacking() && animationTimer >= frameDuration) {
+                // начинаем атаку
                 currentFrame = (currentFrame + 1) % totalFrames;
+
+                totalFrames = 5;
+                animationTimer = 0.f;
+                currentFrame++;
+                if (currentFrame >= totalFrames) {
+                    currentFrame = 0;
+                }
+
                 sprite.setTexture(texture_Attack);
                 sprite.setTextureRect(
                     sf::IntRect((currentFrame * 128), 37, 128, 91));
             }
+            if (!isAttacking()) {
+                currentState = PlayerState::Idle;
+                currentFrame = 0.f;
+                animationTimer = 0.f;
+            }
             break;
         case PlayerState::Idle:
-            if (animationTimer >= frameDuration) {
+            if (!isAttacking() && animationTimer >= frameDuration) {
                 animationTimer = 0.f;
                 totalFrames = 10;
                 currentFrame = (currentFrame + 1) % totalFrames;
@@ -137,7 +152,7 @@ void Player::updateAnimation(float deltaTime) {
             break;
 
         case PlayerState::RunLeft:
-            if (animationTimer >= frameDuration) {
+            if (!isAttacking() && animationTimer >= frameDuration) {
                 animationTimer = 0.f;
                 currentFrame = (currentFrame + 1) % totalFrames;
                 totalFrames = 12;
@@ -147,7 +162,7 @@ void Player::updateAnimation(float deltaTime) {
             }
             break;
         case PlayerState::RunRight:
-            if (animationTimer >= frameDuration) {
+            if (!isAttacking() && animationTimer >= frameDuration) {
                 animationTimer = 0.f;
                 totalFrames = 12;
                 currentFrame = (currentFrame + 1) % totalFrames;
@@ -171,21 +186,32 @@ void Player::drawAttackhitbox(sf::RenderWindow& Window) const {
     Window.draw(debugBox);
 }
 void Player::attack() {
-    if (m_attackCooldown > 0.f) return;
-    if (m_isAttacking) return;
+    if (m_attackCooldown > 0.f) {
+        std::cout << "Cooldow" << std::endl;
+        return;
+    }
+    if (m_isAttacking) {
+        std::cout << "already attak" << std::endl;
+        return;
+    }
+    std::cout << " Start attack" << std::endl;
     m_isAttacking = true;
     m_attackTimer = 0.f;
+    currentFrame = 0;
+    animationTimer = 0.f;
     m_attackCooldown = m_attackSetting.activeDuration + 0.35f;
-    currentState = PlayerState::Attack;
+    if (!isAttacking()) currentState = PlayerState::Attack;
 }
 void Player::updateAttack(float deltaTime) {
-    if (m_attackCooldown > 0.1f) {
+    std::cout << m_attackCooldown << std::endl;
+    if (m_attackCooldown > 0.0f) {
         m_attackCooldown -= deltaTime;
     }
     if (m_isAttacking) {
         m_attackTimer += deltaTime;
         if (m_attackTimer >= m_attackSetting.activeDuration) {
             m_isAttacking = false;
+            m_attackCooldown = 0.5f;
             if (currentState == PlayerState::Attack) {
                 currentState = PlayerState::Idle;
             }
@@ -210,18 +236,23 @@ void Player::moveX(float deltaTime) {
     // velocity.y = 0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         velocity.x = -100.f;
-        currentState = PlayerState::RunLeft;
+        if (!isAttacking()) {
+            currentState = PlayerState::RunLeft;
+        }
         m_factingRight = false;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         velocity.x = 100.f;
-        currentState = PlayerState::RunRight;
+        if (!isAttacking()) {
+            currentState = PlayerState::RunRight;
+        }
         m_factingRight = true;
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        std::cout << "press A"
+                  << std::endl;  //  currentState = PlayerState::Attack;
+        attack();
     } else if (!m_isAttacking) {
         velocity.x = 0.f;
         currentState = PlayerState::Idle;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        //  currentState = PlayerState::Attack;
-        attack();
     } else {
         velocity.x = 0.f;
         currentState = PlayerState::Idle;

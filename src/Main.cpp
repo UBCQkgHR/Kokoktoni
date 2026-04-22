@@ -48,12 +48,15 @@ int main() {
         sf::Event event;
         sf::Time deltaTime = clock.restart();
         float dt = deltaTime.asSeconds();
+        if (dt > 0.033f) dt = 0.033f;
+        window.clear();  // Очищаем экран
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();  // Закрытие окна
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+                window.close();
             }
         }
-
         for (auto &item : level.items) {
             if (!item->collect && player.sprite.getGlobalBounds().intersects(
                                       item->getSprite().getGlobalBounds())) {
@@ -63,9 +66,8 @@ int main() {
             }
         }
 
-        window.clear();  // Очищаем экран
-        for (auto &item : level.items) {  // перебираем все объекты в векторе
-                                          // Item для отрисовки
+        for (auto &item : level.items) {  // перебираем все объекты в
+                                          // векторе Item для отрисовки
             item->draw(window);
         }
 
@@ -73,7 +75,6 @@ int main() {
             window.draw(platform);
         }
 
-        //  window.draw(items[0]->Sprite);
         for (auto &enemy : enemies) {
             if (enemy->isAlive()) {
                 enemy->moveX(dt);
@@ -84,62 +85,26 @@ int main() {
                 game.checkCollisionY(*enemy, level);
                 game.checkCollisionWithEnemies(player, *enemy, dt);
 
-                // game.checkCollisionWithEnemies(player, enemies,
-                // deltaTime.asSeconds());
-
                 window.draw(enemy->sprite);
                 drawHitbox(window, enemy->sprite, sf::Color::Green);
             }
         }
-        // enemy.update(deltaTime.asMicroseconds());  // обновление Враw
         player.updateAttack(dt);
-        player.updateInvincibility(dt);
-        // enemy2.update();  // обновление Враw
-        player.moveX(deltaTime.asSeconds());
-        // enemy.moveX(deltaTime.asSeconds());
-        // enemy2.moveX(deltaTime.asSeconds());
-        // game.checkCollisionX(enemy, level);
-        game.checkCollisionX(player, level);
-        // game.checkCollisionX(enemy2, level);
-
         player.updateAnimation(dt);  // анимация  игрока
-        // enemy.updateAnimation(deltaTime.asSeconds());  // анимация Врага.
-        // enemy2.updateAnimation(deltaTime.asSeconds());  // анимация Врага.
-        /* for (auto &platform : level.platforms_collision) {
-             player.resolveCollisionX(player.sprite, platform);
-             enemy.resolveCollisionX(enemy.sprite, platform);
-             enemy2.resolveCollisionX(enemy2.sprite, platform);
-         }
-    */
+        player.moveX(deltaTime.asSeconds());
+        game.checkCollisionX(player, level);
+
         player.moveY(dt);  // передвигаем игрока
-        //       player.checkCollisionY(level);
-        // enemy.moveY(deltaTime.asSeconds());
-        // enemy2.moveY(deltaTime.asSeconds());
-        // game.checkCollisionY(enemy, level);
         game.checkCollisionY(player, level);
-        // game.checkCollisionY(enemy2, level);
-        /*       for (auto &platform : level.platforms_collision) {
-               for (auto &platform : level.platforms_collision) {
-                   player.resolveCollisionY(player.sprite, platform);
-                   enemy.resolveCollisionY(enemy.sprite, platform);
-                   enemy2.resolveCollisionY(enemy2.sprite, platform);
-               }
-       */
-        // window.draw(enemy.sprite);
-        // window.draw(enemy2.sprite);
+
+        player.updateInvincibility(dt);
+
         window.draw(player.sprite);          // Рисуем игрока//
         window.draw(scorePlayer.scoreText);  // рисуем счет
-        player.drawAttackhitbox(window);
         drawHitbox(window, player.sprite, sf::Color::Red);
-        // drawHitbox(window, enemy.sprite, sf::Color::Green);
-
-        // drawHitbox(window, enemy2.sprite, sf::Color::Green);
         window.draw(scorePlayer.healthText);  // рисуем здоровье
+        player.drawAttackhitbox(window);
         window.display();  // Отображаем всё на экране
-                           //        std::cout << 1000000.0f /
-                           //        clock.getElapsedTime().asMicroseconds()
-                           //                << '\n';
-                           // clock.restart();
     }
 
     return 0;

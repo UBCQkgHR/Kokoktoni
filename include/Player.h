@@ -89,6 +89,12 @@ class Player {
     float animationTimer = 0.f;
     float frameDuration = 0.1f;
     int totalFrames = 4;
+
+    // состояние анимации атаки
+    float attackTimer = 0.f;
+    bool isAttack = false;
+    float attackDuration = 0.4f;  // длительность атаки
+
     sf::Vector2f velocity;  // скорость по х и у
     float gravity = 400.f;
     float jumpStrength = -200.f;
